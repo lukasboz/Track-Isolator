@@ -1,0 +1,144 @@
+<UserControl x:Class="StemSeparator.Views.StemPlayerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:StemSeparator.Converters">
+
+    <Border Style="{StaticResource CardStyle}">
+        <StackPanel>
+
+            <!-- Title -->
+            <TextBlock Text="Separated Stems" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,24" />
+
+            <!-- Transport Controls -->
+            <Border Style="{StaticResource InnerCardStyle}" Margin="0,0,0,24">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,16">
+                        <Button Style="{StaticResource PlayPauseButtonStyle}"
+                                Command="{Binding Player.TogglePlayPauseCommand}"
+                                DockPanel.Dock="Left">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="22"
+                                       Foreground="White" HorizontalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="&#xE768;" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Player.IsPlaying}" Value="True">
+                                                <Setter Property="Text" Value="&#xE769;" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Button>
+
+                        <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center"
+                                   FontFamily="Consolas" FontSize="14"
+                                   Foreground="{StaticResource TextPrimaryBrush}">
+                            <Run Text="{Binding Player.CurrentTimeFormatted, Mode=OneWay}" />
+                            <Run Text=" / " />
+                            <Run Text="{Binding Player.DurationFormatted, Mode=OneWay}" />
+                        </TextBlock>
+                    </DockPanel>
+
+                    <Slider Style="{StaticResource SeekSliderStyle}"
+                            Minimum="0"
+                            Maximum="{Binding Player.Duration}"
+                            Value="{Binding Player.CurrentTime}"
+                            Thumb.DragCompleted="SeekSlider_DragCompleted"
+                            Thumb.DragStarted="SeekSlider_DragStarted"
+                            x:Name="SeekSlider" />
+                </StackPanel>
+            </Border>
+
+            <!-- Stem Rows -->
+            <ItemsControl ItemsSource="{Binding Player.Stems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,16" CornerRadius="12" Padding="16"
+                                Background="{StaticResource CardInnerBrush}"
+                                BorderThickness="2">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="BorderBrush" Value="{StaticResource BorderPurpleBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMuted}" Value="True">
+                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <DockPanel>
+                                <Button Content="Download"
+                                        Style="{StaticResource LinkButtonStyle}"
+                                        Command="{Binding DownloadCommand}"
+                                        DockPanel.Dock="Right"
+                                        VerticalAlignment="Center" />
+
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <ToggleButton IsChecked="{Binding IsMuted, Converter={StaticResource InverseBool}, Mode=OneWay}"
+                                                  Command="{Binding ToggleMuteCommand}"
+                                                  Style="{StaticResource StemToggleStyle}">
+                                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                                   Foreground="White" HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="&#xE767;" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMuted}" Value="True">
+                                                            <Setter Property="Text" Value="&#xE74F;" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </ToggleButton>
+
+                                    <!-- Volume Slider -->
+                                    <Slider Minimum="0" Maximum="100" Width="100"
+                                            Value="{Binding VolumePercent, Mode=TwoWay}"
+                                            VerticalAlignment="Center"
+                                            IsMoveToPointEnabled="True"
+                                            Margin="12,0,0,0" />
+
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               FontWeight="SemiBold" FontSize="15"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center" Margin="16,0,0,0" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Hint -->
+            <TextBlock TextWrapping="Wrap"
+                       Text="Shortcuts: Space=play/pause, 1-4=toggle stems, Left/Right=seek, M=mute all, U=unmute all"
+                       FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"
+                       Margin="0,8,0,24" />
+
+            <!-- Download Mix Button -->
+            <Button Content="Download Mix (unmuted stems)"
+                    Style="{StaticResource ActionButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Padding="24,12"
+                    Command="{Binding Player.DownloadMixCommand}"
+                    Margin="0,0,0,12" />
+
+            <!-- Karaoke Export Button -->
+            <Button Content="Karaoke Export (no vocals)"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Padding="24,12"
+                    Command="{Binding Player.KaraokeModeCommand}"
+                    Margin="0,0,0,12" />
+
+            <!-- Process Another Song Button -->
+            <Button Content="Process Another Song"
+                    Style="{StaticResource FullWidthButtonStyle}"
+                    Command="{Binding ResetCommand}" />
+
+        </StackPanel>
+    </Border>
+</UserControl>

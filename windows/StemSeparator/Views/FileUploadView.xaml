@@ -1,0 +1,72 @@
+<UserControl x:Class="StemSeparator.Views.FileUploadView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:StemSeparator.Converters">
+
+    <Border Style="{StaticResource CardStyle}">
+        <StackPanel>
+            <!-- Drop Zone -->
+            <Border x:Name="DropZone"
+                    BorderThickness="2"
+                    BorderBrush="{StaticResource BorderGrayBrush}"
+                    CornerRadius="12"
+                    Padding="48"
+                    Background="{StaticResource CardInnerBrush}"
+                    AllowDrop="True"
+                    DragEnter="DropZone_DragEnter"
+                    DragOver="DropZone_DragOver"
+                    DragLeave="DropZone_DragLeave"
+                    Drop="DropZone_Drop">
+
+                <StackPanel HorizontalAlignment="Center">
+                    <!-- Upload Icon -->
+                    <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets"
+                               FontSize="56" Foreground="{StaticResource PurpleLightBrush}"
+                               HorizontalAlignment="Center" Margin="0,0,0,16" />
+
+                    <!-- Title / File Name -->
+                    <TextBlock x:Name="TitleText"
+                               Text="{Binding SelectedFileName, TargetNullValue='Upload Your Music'}"
+                               FontSize="22" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               HorizontalAlignment="Center" Margin="0,0,0,8" />
+
+                    <!-- Subtitle -->
+                    <TextBlock Text="Drag and drop an audio file here, or click to browse"
+                               FontSize="14" Foreground="{StaticResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center" Margin="0,0,0,24" />
+
+                    <!-- Buttons -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="Choose File"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Command="{Binding SelectFileCommand}" />
+
+                        <Button Content="Start Separation"
+                                Margin="16,0,0,0"
+                                Command="{Binding ProcessCommand}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedFileName}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Supported Formats -->
+            <StackPanel Margin="0,24,0,0">
+                <TextBlock Text="Supported formats:" FontWeight="SemiBold" FontSize="13"
+                           Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                <TextBlock Text="MP3, WAV, FLAC, OGG, M4A, AAC, AIF, AIFF (Max 50 MB)"
+                           FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>
