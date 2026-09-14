@@ -10,73 +10,6 @@ Both clients use the same FastAPI and Demucs backend in `backend/`. Audio is
 processed on the user's computer and is never sent to a hosted inference
 service, object store, database, billing provider, or account system.
 
-The former macOS client and the former cloud-processing web implementation have
-been removed.
-
-## Architecture
-
-```text
-Windows WPF client ─┐
-                    ├── HTTP + Server-Sent Events ──> FastAPI ──> Demucs
-Browser client ─────┘                                  │
-                                                      └── local WAV stems
-```
-
-The backend:
-
-- Binds to loopback by default.
-- Loads the `htdemucs` model once and reuses it.
-- Selects CUDA, Apple MPS, or CPU when supported by the installed PyTorch
-  build.
-- Accepts files up to 50 MB.
-- Streams status and percentage updates.
-- Writes PCM WAV stems to the operating-system temporary directory.
-- Removes uploads after decoding and removes outputs on cleanup.
-
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the shared design.
-
-## Repository layout
-
-| Path | Purpose |
-| --- | --- |
-| `backend/` | Shared FastAPI, PyTorch, Torchaudio, FFmpeg, and Demucs engine |
-| `backend/pyinstaller/` | Windows backend packaging configuration |
-| `backend/scripts/` | Backend setup, model caching, and build scripts |
-| `website-version/` | Local-only Next.js browser client |
-| `windows/` | Native .NET 8 WPF client |
-| `docs/WEB_TECHNICAL.md` | Comprehensive browser-client documentation |
-| `docs/WINDOWS_TECHNICAL.md` | Comprehensive Windows-client documentation |
-
-## Run the prebuilt Windows application
-
-The built package is located at:
-
-```text
-windows/build/release/
-```
-
-Run:
-
-```text
-windows/build/release/StemSeparator.exe
-```
-
-The sibling `backend/` directory is required. Do not copy
-`StemSeparator.exe` by itself.
-
-A portable archive is also available:
-
-```text
-windows/build/StemSeparator-Windows-x64.zip
-```
-
-Extract the whole ZIP, then double-click `StemSeparator.exe`. The application
-starts and stops its local backend automatically. The release is self-contained
-and does not require a separate .NET installation.
-
-See [windows/README.md](./windows/README.md) for detailed run instructions and
-[docs/WINDOWS_TECHNICAL.md](./docs/WINDOWS_TECHNICAL.md) for internals.
-
 ## Run the web application
 
 ### 1. Start the backend
@@ -195,5 +128,3 @@ The current source was verified with:
 - Temporary output identifiers are UUIDs.
 - Output and cleanup routes reject invalid identifiers and path components.
 - Uploaded files are removed immediately after decode.
-
-Do not expose the backend port to a public network.
