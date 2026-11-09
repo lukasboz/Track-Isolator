@@ -1,6 +1,6 @@
-# Stem Separator
+# Track Isolator
 
-Stem Separator is a local-only music stem separation application with two
+rack Isolator is a local-only music stem separation application with two
 clients:
 
 - A native Windows desktop application.
