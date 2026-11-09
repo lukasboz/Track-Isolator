@@ -103,28 +103,3 @@ other.wav
 
 The backend also contains support for `htdemucs_6s`, but the two clients
 intentionally expose the standard four-stem model.
-
-## Verification performed
-
-The current source was verified with:
-
-- Windows Release compilation with zero warnings and zero errors.
-- Web ESLint.
-- Web TypeScript type checking.
-- Next.js production build.
-- `npm audit` with zero known vulnerabilities.
-- PyInstaller backend startup with the bundled model.
-- Backend `/health` response from the frozen executable.
-- Final `StemSeparator.exe` startup.
-- Automatic launch and shutdown of the bundled backend.
-
-## Privacy and security boundary
-
-- The backend listens on loopback unless explicitly configured otherwise.
-- The browser client has no authentication, database, payments, cloud jobs, or
-  upload API.
-- Browser origins are restricted through
-  `STEM_SEPARATOR_ALLOWED_ORIGINS`.
-- Temporary output identifiers are UUIDs.
-- Output and cleanup routes reject invalid identifiers and path components.
-- Uploaded files are removed immediately after decode.
